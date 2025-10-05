@@ -4,19 +4,29 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "npm run build:search-index && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prebuild:search-index": "npm run clean:dist && tsc --project tsconfig.scripts.json",
+    "build:search-index": "node scripts/build-search.js",
+    "clean:dist": "rm -rf dist"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.893.0",
     "@aws-sdk/client-s3": "^3.893.0",
     "@aws-sdk/util-dynamodb": "^3.893.0",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.2",
     "framer-motion": "^12.23.16",
+    "fuse.js": "^7.1.0",
     "gray-matter": "^4.0.3",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "next-mdx-remote": "^5.0.0",
+    "next-themes": "^0.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "rehype-autolink-headings": "^7.1.0",
@@ -25,11 +35,14 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-mdx": "^3.1.1",
-    "tailwind-merge": "^3.3.1"
+    "strip-markdown": "^6.0.0",
+    "tailwind-merge": "^3.3.1",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",

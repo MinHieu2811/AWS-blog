@@ -1,27 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-background">
+      <div className="absolute top-4 right-4">
+        <ModeToggle />
+      </div>
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
             Chào mừng đến với{" "}
-            <span className="text-blue-600 dark:text-blue-400">
+            <span className="text-primary">
               Personal Interactive Blog
             </span>
           </h1>
           
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             An interactive NextJS blog using AWS services. Sharing technical knowledge, especially front-end development insights and best practices.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link href="/blog">
               <Button
-                variant="primary"
+                variant="default"
                 size="lg"
               >
                 Xem Blog
@@ -30,15 +34,14 @@ export default function Home() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => console.log("Learn More clicked")}
             >
               Tìm hiểu thêm
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <div className="bg-card text-card-foreground p-6 rounded-lg shadow-lg">
+              <div className="w-12 h-12 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <Image
                   src="/next.svg"
                   alt="Next.js"
@@ -47,18 +50,18 @@ export default function Home() {
                   className="dark:invert"
                 />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 Next.js 15 + ISR
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-muted-foreground">
                 React framework với App Router, Server Components và Incremental Static Regeneration
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <div className="bg-card text-card-foreground p-6 rounded-lg shadow-lg">
+              <div className="w-12 h-12 bg-secondary text-secondary-foreground rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <svg
-                  className="w-6 h-6 text-orange-600 dark:text-orange-400"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -71,18 +74,18 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 AWS S3 + DynamoDB
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-muted-foreground">
                 Store markdown content in S3 và metadata trong DynamoDB
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
+            <div className="bg-card text-card-foreground p-6 rounded-lg shadow-lg">
+              <div className="w-12 h-12 bg-accent text-accent-foreground rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <svg
-                  className="w-6 h-6 text-green-600 dark:text-green-400"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -95,10 +98,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 MDX + Remark
               </h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-muted-foreground">
                 Render markdown content với syntax highlighting và custom components
               </p>
             </div>

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "dist",
+    "declaration": false,
+    "noEmit": false
+  },
+  "include": [
+    "src/services/**/*.ts",
+    "src/lib/**/*.ts",
+    "src/types/**/*.ts"
+  ]
+}
+
+
