@@ -11,7 +11,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   const [theme] = useExternalStore(themeStore);
   const { setTheme: setNextTheme } = useTheme();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const cookieTheme = Cookies.get("theme") as
       | "light"
       | "dark"

@@ -4,6 +4,7 @@ import "./globals.css";
 import PageTransition from "@/components/layout/PageTransition";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cookies } from "next/headers";
+import SessionManager from "@/components/tracking/SessionManager";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <SessionManager />
           <PageTransition>{children}</PageTransition>
         </ThemeProvider>
       </body>

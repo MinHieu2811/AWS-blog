@@ -79,3 +79,12 @@ export const SUCCESS_MESSAGES = {
   loggedIn: 'Logged in successfully',
   loggedOut: 'Logged out successfully',
 } as const;
+
+export enum TrackingEvent {
+  PAGE_VIEW = 'page_view',
+  TIME_ON_PAGE = 'time_on_page',
+  SCROLL_DEPTH = 'scroll_depth',
+  BLOG_COMPLETED = 'blog_completed',
+  DROP_POSITION = 'drop_position',
+  SESSION_END = 'session_end',
+}
