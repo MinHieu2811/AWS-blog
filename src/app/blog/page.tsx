@@ -41,14 +41,14 @@ function BlogCard({ post }: BlogCardProps) {
           </span>
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
           <Link 
             href={`/blog/${post.slug}`}
             className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             {post.title}
           </Link>
-        </h2>
+        </h1>
 
         <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
           {post.description}
@@ -148,9 +148,9 @@ export default async function BlogPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
               No Blog Posts Yet
-            </h2>
+            </h1>
             <p className="text-gray-600 dark:text-gray-300">
               Check back soon for new content!
             </p>

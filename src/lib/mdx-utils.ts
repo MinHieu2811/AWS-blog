@@ -5,20 +5,26 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import matter from 'gray-matter';
-import { BlogPostFrontmatter, ProcessedMDXContent, MDXContent } from '@/types';
+import { BlogPostFrontmatter, ProcessedMDXContent } from '@/types';
+import { remark } from 'remark'
+import { visit } from 'unist-util-visit'
 
-/**
- * Calculate reading time for content
- */
-export function calculateReadingTime(content: string): number {
-  const wordsPerMinute = 200; // Average reading speed
-  const words = content.trim().split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute);
+export const estimatedReadingTime = (text: string): string => {
+  const averageWPM = 250
+
+  const cleanedText = text?.trim()?.replace(/\s+/g, ' ')
+
+  const words = cleanedText?.split(' ')
+  const wordCount = words?.length ?? 0
+
+  const readingTime = wordCount / averageWPM
+
+  const formattedTime =
+    readingTime >= 1 ? Math.ceil(readingTime) + ` ${readingTime >= 2 ? 'mins' : 'min'}` : 'Less than 1 min'
+
+  return formattedTime
 }
 
-/**
- * Parse frontmatter from markdown content
- */
 export function parseFrontmatter(content: string): {
   frontmatter: BlogPostFrontmatter;
   content: string;
@@ -51,27 +57,23 @@ export function parseFrontmatter(content: string): {
   };
 }
 
-/**
- * Process markdown content and prepare for MDX rendering
- */
 export async function processMarkdownContent(
   markdownContent: string,
   slug: string
 ): Promise<ProcessedMDXContent> {
   const { frontmatter, content } = parseFrontmatter(markdownContent);
-  const readingTime = calculateReadingTime(content);
+  const readingTime = estimatedReadingTime(content);
+  const headings = extractHeadings(content);
 
   return {
     content,
     frontmatter,
     readingTime,
+    headings,
     slug,
   };
 }
 
-/**
- * Serialize markdown content for MDX rendering
- */
 export async function serializeMDXContent(content: string) {
   return await serialize(content, {
     mdxOptions: {
@@ -106,15 +108,17 @@ export async function processAndSerializeMDX(
 ): Promise<{
   mdxSource: any;
   frontmatter: BlogPostFrontmatter;
-  readingTime: number;
+  readingTime: string;
+  headings: Array<{ text: string; level: number }>;
 }> {
   const processed = await processMarkdownContent(markdownContent, slug);
-  const mdxSource = await serializeMDXContent(processed.content);
+  const mdxSource = await serializeMDXContent(processed.content || '');
 
   return {
     mdxSource,
     frontmatter: processed.frontmatter,
     readingTime: processed.readingTime,
+    headings: processed.headings,
   };
 }
 
@@ -188,3 +192,32 @@ export function generateTableOfContents(content: string): Array<{
 
   return toc;
 }
+
+type ChildTree = {
+  type: 'heading' | 'text'
+  value: string
+  position?: Position
+}
+
+type Position = {
+  line: number
+  column: number
+  offset: number
+}
+
+export const extractHeadings = (mdxContent: string) => {
+  const headings: Array<{ text: string; level: number }> = []
+  const tree = remark().use(remarkMdx).parse(mdxContent)
+
+  visit(tree, 'heading', (node: any) => {
+    const text = node?.children
+      ?.filter((i: ChildTree) => i?.type !== 'heading')
+      ?.map((child: ChildTree) => child?.value)
+      .join('')
+
+    headings.push({ text, level: node?.depth })
+  })
+
+  return headings
+}
+

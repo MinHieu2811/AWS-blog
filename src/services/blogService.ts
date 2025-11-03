@@ -3,7 +3,7 @@ import { s3Service } from './s3Service';
 import { 
   processAndSerializeMDX, 
   extractSlugFromS3Key, 
-  generateS3KeyFromSlug, 
+  generateS3KeyFromSlug,
 } from '@/lib/mdx-utils';
 import { 
   BlogPost, 
@@ -19,9 +19,7 @@ export class BlogService {
    */
   async getBlogPost(slug: string): Promise<BlogApiResponse<BlogPostResponse>> {
     try {
-      // Get markdown content from S3
-      const s3Key = generateS3KeyFromSlug(slug, s3Config.blogPrefix);
-      const contentResponse = await s3Service.getMarkdownFile(s3Key);
+      const contentResponse = await s3Service.getMarkdownFileBySlug(slug, 'mdx');
 
       if (!contentResponse.success || !contentResponse.data) {
         return {
@@ -31,10 +29,11 @@ export class BlogService {
       }
 
       // Process and serialize MDX content
-      const { mdxSource, frontmatter, readingTime } = await processAndSerializeMDX(
+      const { mdxSource, frontmatter, readingTime, headings } = await processAndSerializeMDX(
         contentResponse.data,
         slug
       );
+      console.log('headings', headings);
 
       // Create blog post object
       const blogPost: BlogPost = {
@@ -42,10 +41,10 @@ export class BlogService {
         readingTime,
         frontmatter: frontmatter,
         content: mdxSource,
-        seo: frontmatter.seo,
+        seo: frontmatter?.seo,
+        headings,
       };
 
-      // Get related posts (simplified - in real app, you'd query DynamoDB)
       const relatedPosts: BlogMetadata[] = [];
 
       return {
@@ -71,7 +70,6 @@ export class BlogService {
    */
   async getAllBlogPosts(): Promise<BlogApiResponse<BlogListResponse>> {
     try {
-      // Get all markdown files from S3
       const filesResponse = await s3Service.getAllMarkdownFiles();
 
       if (!filesResponse.success || !filesResponse.data) {
@@ -112,6 +110,7 @@ export class BlogService {
                 isPublished: processed.frontmatter?.isPublished,
                 s3Key: file.Key,
                 seo: processed.frontmatter.seo,
+                headings: processed.headings,
               };
 
               posts.push(blogMetadata);

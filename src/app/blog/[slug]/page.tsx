@@ -1,54 +1,9 @@
-import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
-import { MDXRemote } from 'next-mdx-remote';
-import { blogService } from '@/services/blogService';
-import { formatDate } from '@/lib/utils';
-
-// MDX Components for custom rendering
-const MDXComponents = {
-  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6" {...props} />
-  ),
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-4 mt-8" {...props} />
-  ),
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3 mt-6" {...props} />
-  ),
-  h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 mt-4" {...props} />
-  ),
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed" {...props} />
-  ),
-  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="list-disc list-inside mb-4 text-gray-700 dark:text-gray-300" {...props} />
-  ),
-  ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className="list-decimal list-inside mb-4 text-gray-700 dark:text-gray-300" {...props} />
-  ),
-  li: (props: React.HTMLAttributes<HTMLLIElement>) => (
-    <li className="mb-2" {...props} />
-  ),
-  blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-600 dark:text-gray-400 mb-4" {...props} />
-  ),
-  code: (props: React.HTMLAttributes<HTMLElement>) => (
-    <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono" {...props} />
-  ),
-  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-    <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4" {...props} />
-  ),
-  a: (props: React.HTMLAttributes<HTMLAnchorElement>) => (
-    <a className="text-blue-600 dark:text-blue-400 hover:underline" {...props} />
-  ),
-  img: (props: React.HTMLAttributes<HTMLImageElement>) => (
-    <img className="max-w-full h-auto rounded-lg mb-4" {...props} />
-  ),
-  hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
-    <hr className="border-gray-300 dark:border-gray-600 my-8" {...props} />
-  ),
-};
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { blogService } from "@/services/blogService";
+import { formatDate } from "@/lib/utils";
+import { MDXContent } from "@/components/features/MDXContent";
+import TableOfContent from "@/components/features/TableOfContent";
 
 interface BlogPostPageProps {
   params: {
@@ -59,7 +14,7 @@ interface BlogPostPageProps {
 export async function generateStaticParams() {
   try {
     const response = await blogService.getAllBlogPosts();
-    
+
     if (!response.success || !response.data) {
       return [];
     }
@@ -68,20 +23,23 @@ export async function generateStaticParams() {
       slug: post.slug,
     }));
   } catch (error) {
-    console.error('Error generating static params:', error);
+    console.error("Error generating static params:", error);
     return [];
   }
 }
 
 // Generate metadata for each blog post
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
   try {
-    const response = await blogService.getBlogPost(params.slug);
-    
+    const { slug } = await params;
+    const response = await blogService.getBlogPost(slug);
+
     if (!response.success || !response.data) {
       return {
-        title: 'Blog Post Not Found',
-        description: 'The requested blog post could not be found.',
+        title: "Blog Post Not Found",
+        description: "The requested blog post could not be found.",
       };
     }
 
@@ -95,40 +53,47 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       openGraph: {
         title: post.seo.title,
         description: post.seo.description,
-        type: 'article',
+        type: "article",
         publishedTime: post?.frontmatter?.publishedAt,
         modifiedTime: post?.frontmatter?.updatedAt,
         authors: [post?.frontmatter?.author],
         tags: post?.frontmatter?.tags,
-        images: post?.frontmatter?.featuredImage ? [
-          {
-            url: post?.frontmatter?.featuredImage,
-            alt: post?.frontmatter?.featuredImageAlt || post?.frontmatter?.title,
-          }
-        ] : [],
+        images: post?.frontmatter?.featuredImage
+          ? [
+              {
+                url: post?.frontmatter?.featuredImage,
+                alt:
+                  post?.frontmatter?.featuredImageAlt ||
+                  post?.frontmatter?.title,
+              },
+            ]
+          : [],
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: post.seo.title,
         description: post.seo.description,
-        images: post?.frontmatter?.featuredImage ? [post?.frontmatter?.featuredImage] : [],
+        images: post?.frontmatter?.featuredImage
+          ? [post?.frontmatter?.featuredImage]
+          : [],
       },
       alternates: {
         canonical: post.seo.canonicalUrl,
       },
     };
   } catch (error) {
-    console.error('Error generating metadata:', error);
+    console.error("Error generating metadata:", error);
     return {
-      title: 'Blog Post Not Found',
-      description: 'The requested blog post could not be found.',
+      title: "Blog Post Not Found",
+      description: "The requested blog post could not be found.",
     };
   }
 }
 
 // Main blog post page component
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const response = await blogService.getBlogPost(params.slug);
+  const { slug } = await params;
+  const response = await blogService.getBlogPost(slug);
 
   if (!response.success || !response.data) {
     notFound();
@@ -144,10 +109,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             {post?.frontmatter?.title}
           </h1>
-          
+
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
             {post?.frontmatter?.description}
           </p>
+
+          <TableOfContent headings={post?.headings} className="mb-6" />
 
           {/* Meta information */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-6">
@@ -183,7 +150,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="mb-8">
               <img
                 src={post?.frontmatter?.featuredImage}
-                alt={post?.frontmatter?.featuredImageAlt || post?.frontmatter?.title}
+                alt={
+                  post?.frontmatter?.featuredImageAlt ||
+                  post?.frontmatter?.title
+                }
                 className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
               />
             </div>
@@ -192,11 +162,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Content */}
         <article className="prose prose-quoteless prose-neutral dark:prose-invert max-w-none">
-          <MDXRemote
-            {...post.content}
-            frontmatter={post.frontmatter}
-            components={MDXComponents}
-          />
+          <MDXContent source={post?.content} frontmatter={post?.frontmatter} />
         </article>
 
         {/* Footer */}
@@ -204,7 +170,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Last updated: {formatDate(post?.frontmatter?.updatedAt || post?.frontmatter?.publishedAt)}
+                Last updated:{" "}
+                {formatDate(
+                  post?.frontmatter?.updatedAt || post?.frontmatter?.publishedAt
+                )}
               </p>
             </div>
             <div className="flex space-x-4">

@@ -85,6 +85,14 @@ export class S3Service {
   }
 
   /**
+   * Get markdown file by slug and extension
+   */
+  async getMarkdownFileBySlug(slug: string, extension: 'md' | 'mdx' = 'md'): Promise<BlogApiResponse<string>> {
+    const key = `${this.blogPrefix}${slug}.${extension}`;
+    return this.getMarkdownFile(key);
+  }
+
+  /**
    * Get all markdown files (handles pagination automatically)
    */
   async getAllMarkdownFiles(): Promise<BlogApiResponse<S3Object[]>> {
@@ -120,14 +128,6 @@ export class S3Service {
         error: error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
-  }
-
-  /**
-   * Get markdown file by slug
-   */
-  async getMarkdownFileBySlug(slug: string): Promise<BlogApiResponse<string>> {
-    const key = `${this.blogPrefix}${slug}.md`;
-    return this.getMarkdownFile(key);
   }
 
   /**

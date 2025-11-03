@@ -23,7 +23,7 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link href="/blog">
+            <Link href="/test">
               <Button
                 variant="default"
                 size="lg"

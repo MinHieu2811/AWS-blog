@@ -33,15 +33,15 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
+        {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <SessionManager />
+          <SessionManager /> */}
           <PageTransition>{children}</PageTransition>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

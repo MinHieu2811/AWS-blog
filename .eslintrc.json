@@ -83,6 +83,7 @@
           "reservedFirst": true
         }
       ],
+      "next/no-img-element": "off",
       "padding-line-between-statements": [
         "warn",
         {"blankLine": "always", "prev": "*", "next": "return"},

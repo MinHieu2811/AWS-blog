@@ -20,6 +20,11 @@
 # production
 /build
 
+#aws
+/aws
+/.specify
+/.cursor
+
 # misc
 .DS_Store
 *.pem

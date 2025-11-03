@@ -3,7 +3,8 @@ import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 // Blog content types
 export interface BlogPost {
   slug: string;
-  readingTime: number;
+  readingTime: string;
+  headings: Array<{ text: string; level: number }>;
   frontmatter: BlogPostFrontmatter;
   content: MDXRemoteSerializeResult;
   seo: SEO;
@@ -26,7 +27,8 @@ export interface BlogMetadata {
   author: string;
   tags: string[];
   category: string;
-  readingTime: number;
+  readingTime: string;
+  headings: Array<{ text: string; level: number }>;
   featuredImage?: string;
   featuredImageAlt?: string;
   isPublished: boolean;
@@ -79,14 +81,15 @@ export interface S3ListResponse {
 export interface MDXContent {
   source: string;
   frontmatter: BlogPostFrontmatter;
-  readingTime: number;
+  readingTime: string;
 }
 
 export interface ProcessedMDXContent {
   content: string;
   frontmatter: BlogPostFrontmatter;
-  readingTime: number;
+  readingTime: string;
   slug: string;
+  headings: Array<{ text: string; level: number }>;
 }
 
 // API Response types
