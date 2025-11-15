@@ -20,7 +20,7 @@ interface BlogCardProps {
 
 function BlogCard({ post }: BlogCardProps) {
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+    <article className="card">
       {post.featuredImage && (
         <div className="aspect-video overflow-hidden">
           <img
@@ -33,24 +33,24 @@ function BlogCard({ post }: BlogCardProps) {
       
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs font-medium">
+          <span className="tag">
             {post.category}
           </span>
-          <span className="text-gray-500 dark:text-gray-400 text-sm">
+          <span className="text-text-muted text-sm">
             {post.readingTime} min read
           </span>
         </div>
 
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+        <h1 className="text-xl font-semibold text-text-primary mb-2 line-clamp-2">
           <Link 
             href={`/blog/${post.slug}`}
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="hover:text-accent-primary transition-colors"
           >
             {post.title}
           </Link>
         </h1>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+        <p className="text-text-secondary mb-4 line-clamp-3">
           {post.description}
         </p>
 
@@ -58,19 +58,19 @@ function BlogCard({ post }: BlogCardProps) {
           {post.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs"
+              className="bg-background-secondary text-text-secondary px-2 py-1 rounded text-xs"
             >
               #{tag}
             </span>
           ))}
           {post.tags.length > 3 && (
-            <span className="text-gray-500 dark:text-gray-400 text-xs">
+            <span className="text-text-muted text-xs">
               +{post.tags.length - 3} more
             </span>
           )}
         </div>
 
-        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-between text-sm text-text-muted">
           <span>By {post.author}</span>
           <time dateTime={post.publishedAt}>
             {formatDate(post.publishedAt)}
@@ -86,12 +86,12 @@ export default async function BlogPage() {
 
   if (!response.success || !response.data) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background-secondary flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl font-bold text-text-primary mb-4">
             Error Loading Blog Posts
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-text-secondary">
             {response.error || 'Unable to load blog posts at this time.'}
           </p>
         </div>
@@ -102,14 +102,14 @@ export default async function BlogPage() {
   const { posts } = response.data;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background-primary">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
             Personal Interactive Blog
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-text-secondary max-w-3xl mx-auto">
             Sharing technical knowledge, especially front-end development insights and best practices. 
             Building personal credentials and growing user research.
           </p>
@@ -117,25 +117,25 @@ export default async function BlogPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+          <div className="card text-center">
+            <div className="text-3xl font-bold text-accent-primary mb-2">
               {posts.length}
             </div>
-            <div className="text-gray-600 dark:text-gray-300">Total Posts</div>
+            <div className="text-text-secondary">Total Posts</div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+          <div className="card text-center">
+            <div className="text-3xl font-bold text-accent-primary mb-2">
               {new Set(posts.map(p => p.category)).size}
             </div>
-            <div className="text-gray-600 dark:text-gray-300">Categories</div>
+            <div className="text-text-secondary">Categories</div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+          <div className="card text-center">
+            <div className="text-3xl font-bold text-accent-primary mb-2">
               {new Set(posts.flatMap(p => p.tags)).size}
             </div>
-            <div className="text-gray-600 dark:text-gray-300">Tags</div>
+            <div className="text-text-secondary">Tags</div>
           </div>
         </div>
 
@@ -148,10 +148,10 @@ export default async function BlogPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h1 className="text-2xl font-semibold text-text-primary mb-4">
               No Blog Posts Yet
             </h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-text-secondary">
               Check back soon for new content!
             </p>
           </div>
@@ -159,7 +159,7 @@ export default async function BlogPage() {
 
         {/* Footer */}
         <footer className="mt-16 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-text-muted">
             Last updated: {new Date().toLocaleDateString()}
           </p>
         </footer>

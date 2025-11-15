@@ -112,10 +112,9 @@ export async function processAndSerializeMDX(
   headings: Array<{ text: string; level: number }>;
 }> {
   const processed = await processMarkdownContent(markdownContent, slug);
-  const mdxSource = await serializeMDXContent(processed.content || '');
 
   return {
-    mdxSource,
+    mdxSource: processed.content,
     frontmatter: processed.frontmatter,
     readingTime: processed.readingTime,
     headings: processed.headings,

@@ -33,7 +33,6 @@ export class BlogService {
         contentResponse.data,
         slug
       );
-      console.log('headings', headings);
 
       // Create blog post object
       const blogPost: BlogPost = {

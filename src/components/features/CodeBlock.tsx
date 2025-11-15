@@ -22,15 +22,15 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ content, className = '', language
   }, [content, language])
 
   return (
-    <div className={`${className} relative`}>
+    <div className={`${className} relative block-code`}>
       <CopyButton
         buttonConfig={{
           variant: 'secondary',
           size: 'icon'
         }}
-        className="absolute top-4 right-4"
+        className="absolute top-4 right-4 z-10"
       />
-      {highlightedCode ?? <pre className="p-3 rounded-md text-sm border-gray-300">{content?.props?.children}</pre>}
+      {highlightedCode ?? <pre className="p-3 rounded-md text-sm">{content?.props?.children}</pre>}
     </div>
   )
 }

@@ -102,22 +102,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { post } = response?.data || {};
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background-primary">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
             {post?.frontmatter?.title}
           </h1>
 
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-xl text-text-secondary mb-6">
             {post?.frontmatter?.description}
           </p>
 
-          <TableOfContent headings={post?.headings} className="mb-6" />
-
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6">
             <span>By {post?.frontmatter?.author}</span>
             <span>•</span>
             <time dateTime={post?.frontmatter?.publishedAt}>
@@ -126,7 +124,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <span>•</span>
             <span>{post?.readingTime} min read</span>
             <span>•</span>
-            <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs">
+            <span className="tag">
               {post?.frontmatter?.category}
             </span>
           </div>
@@ -137,7 +135,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post?.frontmatter?.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm"
+                  className="bg-background-secondary text-text-secondary px-3 py-1 rounded-full text-sm"
                 >
                   #{tag}
                 </span>
@@ -161,15 +159,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </header>
 
         {/* Content */}
-        <article className="prose prose-quoteless prose-neutral dark:prose-invert max-w-none">
-          <MDXContent source={post?.content} frontmatter={post?.frontmatter} />
-        </article>
+        <div className="flex flex-row gap-4 w-full">
+          <article className="prose-article max-w-none flex-1">
+            <MDXContent source={post?.content} frontmatter={post?.frontmatter} />
+          </article>
+          <div className="mb-6 w-1/4 relative">
+            <TableOfContent headings={post?.headings} className="sticky top-0" />
+          </div>
+        </div>
 
         {/* Footer */}
-        <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <footer className="mt-12 pt-8 border-t border-border-medium">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-text-muted">
                 Last updated:{" "}
                 {formatDate(
                   post?.frontmatter?.updatedAt || post?.frontmatter?.publishedAt
@@ -177,10 +180,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
             </div>
             <div className="flex space-x-4">
-              <button className="text-blue-600 dark:text-blue-400 hover:underline">
+              <button className="text-accent-primary hover:underline">
                 Share
               </button>
-              <button className="text-blue-600 dark:text-blue-400 hover:underline">
+              <button className="text-accent-primary hover:underline">
                 Bookmark
               </button>
             </div>
@@ -191,5 +194,4 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
-// Enable ISR with revalidation every hour
 export const revalidate = 3600;

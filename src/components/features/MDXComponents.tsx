@@ -3,7 +3,7 @@ import React from 'react'
 // import { CountExample } from '@/components/features/CountExample';
 // import { Highlight } from '@/components/features/Highlight';
 
-// import CodeBlock from '@/components/features/CodeBlock'
+import CodeBlock from '@/components/features/CodeBlock'
 // import { MDXRemoteProps } from 'next-mdx-remote';
 // import BlockInfo, { BlockInfoProps } from '@/components/features/BlockInfo'
 // import ForwardLink, { ForwardLinkProps } from '@/components/ui/ForwardLink'
@@ -12,14 +12,14 @@ const CustomH1 = (props: object) => <h1 className="text-2xl font-bold text-blog-
 const CustomH2 = (props: { children: string }) => (
   <h2
     className="text-xl font-semibold my-3 text-blog-primary"
-    // id={(props?.children ?? '')?.toLocaleLowerCase()?.replaceAll(' ', '-')}
+    id={(props?.children ?? '')?.toLocaleLowerCase()?.replaceAll(' ', '-')}
     {...props}
   />
 )
 const CustomH3 = (props: { children: string }) => (
   <h3
     className="text-lg font-medium my-2 text-blog-primary"
-    // id={(props?.children ?? '')?.toLocaleLowerCase()?.replaceAll(' ', '-')}
+    id={(props?.children ?? '')?.toLocaleLowerCase()?.replaceAll(' ', '-')}
     {...props}
   />
 )
@@ -30,7 +30,7 @@ const CustomBlockquote = (props: object) => (
 const CustomCode = (props: object) => (
   <code className="bg-blog-code-background text-blog-code-text px-2 py-1 rounded" {...props} />
 )
-// const CustomPre = (props: any) => <CodeBlock {...props} content={props?.children} />
+const CustomPre = (props: any) => <CodeBlock {...props} content={props?.children} />
 
 // const CustomBlockInfo = (props: BlockInfoProps) => {
 //   return <BlockInfo {...props}>{props?.children}</BlockInfo>
@@ -53,7 +53,7 @@ export const mdxComponents = {
   p: CustomP,
   blockquote: CustomBlockquote,
   code: CustomCode,
-  // pre: CustomPre,
+  pre: CustomPre,
   img: CustomImage,
   a: CustomA,
 //   CustomBlockInfo: CustomBlockInfo,
