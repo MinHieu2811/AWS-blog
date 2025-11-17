@@ -1,32 +1,46 @@
 "use client";
 
-import * as React from "react";
+import { useLayoutEffect, useEffect, type ReactNode } from "react";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import { type ThemeProviderProps } from "next-themes";
 import { useExternalStore } from "@/hooks/useExternalStore";
-import { themeStore } from "@/store/themeStore";
+import { themeStore, type Theme } from "@/store/themeStore";
 import Cookies from "js-cookie";
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  const [theme] = useExternalStore(themeStore);
-  const { setTheme: setNextTheme } = useTheme();
+interface ThemeSyncProps {
+  children: ReactNode;
+}
 
-  React.useLayoutEffect(() => {
-    const cookieTheme = Cookies.get("theme") as
-      | "light"
-      | "dark"
-      | "system"
-      | undefined;
+function ThemeSync({ children }: ThemeSyncProps) {
+  const [theme] = useExternalStore(themeStore);
+  const { setTheme: setNextTheme, resolvedTheme } = useTheme();
+
+  useLayoutEffect(() => {
+    const cookieTheme = Cookies.get("theme") as Theme | undefined;
     if (cookieTheme) {
       themeStore.setTheme(cookieTheme);
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (theme) {
       setNextTheme(theme);
     }
   }, [theme, setNextTheme]);
 
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+  useEffect(() => {
+    if (resolvedTheme) {
+      document.documentElement.style.colorScheme = resolvedTheme;
+    }
+  }, [resolvedTheme]);
+
+  return <>{children}</>;
+}
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return (
+    <NextThemesProvider {...props}>
+      <ThemeSync>{children}</ThemeSync>
+    </NextThemesProvider>
+  );
 }

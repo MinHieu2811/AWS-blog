@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 import Button from "@/components/Button";
@@ -22,12 +22,11 @@ export function ModeToggle() {
       newTheme = theme === "light" ? "dark" : "light";
     }
     themeStore.setTheme(newTheme);
-
   };
 
-  const [effectiveTheme, setEffectiveTheme] = React.useState(theme);
+  const [_, setEffectiveTheme] = useState(theme);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const getSystemTheme = () => (mediaQuery.matches ? "dark" : "light");

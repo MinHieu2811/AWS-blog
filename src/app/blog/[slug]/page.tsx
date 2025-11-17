@@ -4,6 +4,7 @@ import { blogService } from "@/services/blogService";
 import { formatDate } from "@/lib/utils";
 import { MDXContent } from "@/components/features/MDXContent";
 import TableOfContent from "@/components/features/TableOfContent";
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 interface BlogPostPageProps {
   params: {
@@ -113,6 +114,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <p className="text-xl text-text-secondary mb-6">
             {post?.frontmatter?.description}
           </p>
+
+          <ModeToggle />
 
           {/* Meta information */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6">

@@ -57,13 +57,5 @@ export interface LoadingState {
   error?: string;
 }
 
-// Theme types
-export type Theme = 'light' | 'dark' | 'system';
-
-export interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-}
-
 // Re-export blog types
 export * from './blog';

@@ -38,8 +38,8 @@ export async function highlight(
     }) as JSX.Element
 
     if (isValidElement(lightJsx) && isValidElement(darkJsx)) {
-      const lightProps = lightJsx.props as { className?: string; children?: React.ReactNode }
-      const darkProps = darkJsx.props as { className?: string; children?: React.ReactNode }
+      const lightProps = {...(lightJsx.props || {}), key: 'light'} as { className?: string; children?: React.ReactNode }
+      const darkProps = {...(darkJsx.props || {}), key: 'dark'} as { className?: string; children?: React.ReactNode }
 
       // Ensure the className includes 'shiki' for proper styling
       const lightClassName = [lightProps.className, 'block-code-light'].filter(Boolean).join(' ');
@@ -51,12 +51,12 @@ export async function highlight(
           jsx('div', {
             className: lightClassName,
             children: lightProps.children,
-            key: 'light',
+            ...lightProps,
           }),
           jsx('div', {
             className: darkClassName,
             children: darkProps.children,
-            key: 'dark',
+            ...darkProps,
           }),
         ],
       });

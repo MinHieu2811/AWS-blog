@@ -5,6 +5,7 @@ import PageTransition from "@/components/layout/PageTransition";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cookies } from "next/headers";
 import SessionManager from "@/components/tracking/SessionManager";
+import type { Theme } from "@/store/themeStore";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,16 +36,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme = (await cookies()).get("theme")?.value || "system";
+  const themeCookie = (await cookies()).get("theme")?.value as Theme | undefined;
+  const initialTheme = themeCookie ?? "system";
+  const htmlClassName = themeCookie === "dark" ? "dark" : undefined;
+  const htmlStyle =
+    themeCookie === "dark" || themeCookie === "light"
+      ? { colorScheme: themeCookie }
+      : undefined;
 
   return (
-    <html lang="en" className={theme} style={{ colorScheme: theme }} suppressHydrationWarning>
+    <html lang="en" className={htmlClassName} style={htmlStyle} suppressHydrationWarning>
       <body
         className={`${inter.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme={initialTheme}
           enableSystem
           disableTransitionOnChange
         >
