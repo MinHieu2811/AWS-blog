@@ -19,7 +19,7 @@ export class BlogService {
    */
   async getBlogPost(slug: string): Promise<BlogApiResponse<BlogPostResponse>> {
     try {
-      const contentResponse = await s3Service.getMarkdownFileBySlug(slug, 'mdx');
+      const contentResponse = await s3Service.getMarkdownFileBySlug(slug);
 
       if (!contentResponse.success || !contentResponse.data) {
         return {
@@ -89,7 +89,9 @@ export class BlogService {
           if (contentResponse.success && contentResponse.data) {
             // Process content to get frontmatter
             const { processMarkdownContent } = await import('@/lib/mdx-utils');
-            const slug = extractSlugFromS3Key(file.Key, s3Config.blogPrefix);
+            const slug = extractSlugFromS3Key(file.Key, s3Config.sourcePrefix, {
+              contentFileName: s3Config.sourceContentFileName,
+            });
             const processed = await processMarkdownContent(contentResponse.data, slug);
 
             // Only include published posts
@@ -257,8 +259,11 @@ export class BlogService {
    */
   async blogPostExists(slug: string): Promise<boolean> {
     try {
-      const s3Key = generateS3KeyFromSlug(slug, s3Config.blogPrefix);
-      return await s3Service.fileExists(s3Key);
+      const s3Key = generateS3KeyFromSlug(slug, s3Config.sourcePrefix, {
+        contentFileName: s3Config.sourceContentFileName,
+        slugIsFileName: s3Config.sourceSlugIsFileName,
+      });
+      return await s3Service.fileExists(s3Key, s3Config.sourceBucketName);
     } catch (error) {
       console.error('Error checking if blog post exists:', error);
       return false;

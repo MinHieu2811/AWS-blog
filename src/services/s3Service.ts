@@ -1,20 +1,26 @@
 import { GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { s3Client, s3Config } from '@/lib/aws-config';
+import { generateS3KeyFromSlug } from '@/lib/mdx-utils';
 import { S3Object, S3ListResponse, BlogApiResponse } from '@/types';
 
 export class S3Service {
-  private bucketName: string;
-  private blogPrefix: string;
+  private sourceBucketName: string;
+  private sourcePrefix: string;
+  private sourceContentFileName: string;
 
   constructor() {
-    this.bucketName = s3Config.bucketName;
-    this.blogPrefix = s3Config.blogPrefix;
+    this.sourceBucketName = s3Config.sourceBucketName;
+    this.sourcePrefix = s3Config.sourcePrefix;
+    this.sourceContentFileName = s3Config.sourceContentFileName;
   }
 
-  async getMarkdownFile(key: string): Promise<BlogApiResponse<string>> {
+  async getMarkdownFile(
+    key: string,
+    bucketName: string = this.sourceBucketName
+  ): Promise<BlogApiResponse<string>> {
     try {
       const command = new GetObjectCommand({
-        Bucket: this.bucketName,
+        Bucket: bucketName,
         Key: key,
       });
 
@@ -47,11 +53,13 @@ export class S3Service {
   /**
    * List all markdown files in the blog prefix
    */
-  async listMarkdownFiles(continuationToken?: string): Promise<BlogApiResponse<S3ListResponse>> {
+  async listMarkdownFiles(
+    continuationToken?: string
+  ): Promise<BlogApiResponse<S3ListResponse>> {
     try {
       const command = new ListObjectsV2Command({
-        Bucket: this.bucketName,
-        Prefix: this.blogPrefix,
+        Bucket: this.sourceBucketName,
+        Prefix: this.sourcePrefix,
         ContinuationToken: continuationToken,
         MaxKeys: 100, // Adjust based on your needs
       });
@@ -87,9 +95,12 @@ export class S3Service {
   /**
    * Get markdown file by slug and extension
    */
-  async getMarkdownFileBySlug(slug: string, extension: 'md' | 'mdx' = 'md'): Promise<BlogApiResponse<string>> {
-    const key = `${this.blogPrefix}${slug}.${extension}`;
-    return this.getMarkdownFile(key);
+  async getMarkdownFileBySlug(slug: string): Promise<BlogApiResponse<string>> {
+    const key = generateS3KeyFromSlug(slug, this.sourcePrefix, {
+      contentFileName: this.sourceContentFileName,
+      slugIsFileName: s3Config.sourceSlugIsFileName,
+    });
+    return this.getMarkdownFile(key, this.sourceBucketName);
   }
 
   /**
@@ -133,10 +144,10 @@ export class S3Service {
   /**
    * Check if a file exists in S3
    */
-  async fileExists(key: string): Promise<boolean> {
+  async fileExists(key: string, bucketName: string = this.sourceBucketName): Promise<boolean> {
     try {
       const command = new GetObjectCommand({
-        Bucket: this.bucketName,
+        Bucket: bucketName,
         Key: key,
       });
 
@@ -158,7 +169,7 @@ export class S3Service {
   }>> {
     try {
       const command = new GetObjectCommand({
-        Bucket: this.bucketName,
+        Bucket: this.sourceBucketName,
         Key: key,
       });
 

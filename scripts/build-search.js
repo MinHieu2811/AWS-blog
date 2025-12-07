@@ -56,7 +56,7 @@ async function generateSearchIndex() {
           const vfile = await remark().use(strip).process(content);
           const plainTextContent = String(vfile);
 
-          const slug = extractSlugFromS3Key(file.Key, s3Config.blogPrefix);
+          const slug = extractSlugFromS3Key(file.Key, s3Config.sourcePrefix);
 
           searchIndex.push({
             slug: slug,

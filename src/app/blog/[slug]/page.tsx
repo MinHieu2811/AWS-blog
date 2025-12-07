@@ -6,11 +6,7 @@ import { MDXContent } from "@/components/features/MDXContent";
 import TableOfContent from "@/components/features/TableOfContent";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 
-interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
-}
+type BlogPostPageProps = Promise<{slug: string}>;
 
 export async function generateStaticParams() {
   try {
@@ -32,7 +28,7 @@ export async function generateStaticParams() {
 // Generate metadata for each blog post
 export async function generateMetadata({
   params,
-}: BlogPostPageProps): Promise<Metadata> {
+}: {params: BlogPostPageProps}): Promise<Metadata> {
   try {
     const { slug } = await params;
     const response = await blogService.getBlogPost(slug);
@@ -91,8 +87,7 @@ export async function generateMetadata({
   }
 }
 
-// Main blog post page component
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: {params: BlogPostPageProps}) {
   const { slug } = await params;
   const response = await blogService.getBlogPost(slug);
 
@@ -125,11 +120,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {formatDate(post?.frontmatter?.publishedAt)}
             </time>
             <span>•</span>
-            <span>{post?.readingTime} min read</span>
-            <span>•</span>
-            <span className="tag">
-              {post?.frontmatter?.category}
-            </span>
+            <span>{post?.readingTime} read</span>
           </div>
 
           {/* Tags */}

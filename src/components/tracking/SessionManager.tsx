@@ -3,8 +3,13 @@
 import { useEffect } from 'react';
 import { getSessionId, sendBeaconEvent } from '@/services/trackingEventService';
 import { TrackingEvent } from '@/utils/constants';
+import { usePathname } from 'next/navigation';
+import useBlogTracking from '@/hooks/useTrackingEvent';
 
 const SessionManager = () => {
+  const pathname = usePathname();
+
+  const { lastElementRef } = useBlogTracking({slug: pathname.split('/').pop() as string});
   useEffect(() => {
     getSessionId();
 
@@ -24,7 +29,7 @@ const SessionManager = () => {
     };
   }, []);
 
-  return <></>;
+  return <span ref={lastElementRef}></span>;
 };
 
 export default SessionManager;

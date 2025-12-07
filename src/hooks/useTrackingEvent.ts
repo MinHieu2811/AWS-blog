@@ -17,6 +17,7 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
   const scrollMilestones = useRef(new Set());
   const startTimeRef = useRef<number | null>(null);
   const isTrackingEnabled = useRef(true);
+  const hasTrackedSessionEndRef = useRef(false);
   const widthClientRef = useRef(typeof window !== 'undefined' ? window.innerWidth : 0);
   const heightClientRef = useRef(typeof window !== 'undefined' ? window.innerHeight : 0);
 
@@ -28,6 +29,7 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
         slug,
         eventName,
         data,
+        timestamp: new Date().toISOString(),
       });
     },
     [slug]
@@ -41,13 +43,14 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
         slug,
         eventName,
         data,
+        timestamp: new Date().toISOString(),
       });
     },
     [slug]
   );
 
   useEffect(() => {
-    if (!checkIsClient()) return;
+    if (!checkIsClient() || !slug?.length) return;
 
     getSessionId();
 
@@ -60,17 +63,22 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
       width: widthClientRef.current,
       height: heightClientRef.current,
     });
-  }, [trackEvent]);
+  }, [trackEvent, slug]);
 
   useEffect(() => {
-    if (!checkIsClient()) return;
+    if (!checkIsClient() || !slug?.length) return;
 
     startTimeRef.current = performance.now();
+    hasTrackedSessionEndRef.current = false;
 
-    return () => {
-      if (!isTrackingEnabled.current) return;
+    const handleSessionEnd = () => {
+      if (hasTrackedSessionEndRef.current || !isTrackingEnabled.current) {
+        return;
+      }
 
-      const timeSpent = (performance.now() - (startTimeRef.current ?? 0)) / 1000;
+      hasTrackedSessionEndRef.current = true;
+
+      const timeSpent = (performance.now() - (startTimeRef.current ?? performance.now())) / 1000;
       trackBeaconEvent(TrackingEvent.TIME_ON_PAGE, { timeSpent });
 
       const scrollPosition = window.scrollY;
@@ -82,6 +90,14 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
           : 0;
 
       trackBeaconEvent(TrackingEvent.DROP_POSITION, { scrollPercentage });
+    };
+
+    window.addEventListener('pagehide', handleSessionEnd);
+    window.addEventListener('beforeunload', handleSessionEnd);
+
+    return () => {
+      window.removeEventListener('pagehide', handleSessionEnd);
+      window.removeEventListener('beforeunload', handleSessionEnd);
     };
   }, [slug, trackBeaconEvent]);
 
@@ -108,7 +124,7 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
   }, [trackEvent]);
 
   useEffect(() => {
-    if (!checkIsClient() || !isTrackingEnabled.current) return;
+    if (!checkIsClient() || !isTrackingEnabled.current || !slug?.length) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -127,7 +143,7 @@ const useBlogTracking = ({ slug }: { slug: string }) => {
     }
 
     return () => observer.disconnect();
-  }, [trackEvent]);
+  }, [slug, trackEvent]);
 
   return { lastElementRef };
 };

@@ -1,5 +1,6 @@
 import { CircleAlert, CircleCheck, CircleX, Info } from 'lucide-react'
 import React from 'react'
+import { cn } from '@/lib/utils'
 
 export type BlockInfoProps = {
   variant: 'info' | 'success' | 'warning' | 'error'
@@ -7,45 +8,35 @@ export type BlockInfoProps = {
   children: React.ReactNode
 }
 
-const hardCodeForVariant = {
+const variantMap = {
   info: {
-    colorIcon: 'blue',
-    colorBackgroundWrapper: 'border-blue-300 bg-blue-950',
-    color: 'border-[#0d0f12] bg-[#0d0f12]',
-    icon: <Info color="blue" size={30} />
+    className: 'callout-info',
+    icon: <Info size={20} />,
   },
   success: {
-    colorIcon: 'green',
-    colorBackgroundWrapper: 'border-green-300 bg-green-950',
-    color: 'border-[#0d0f12] bg-[#0d0f12]',
-    icon: <CircleCheck color="green" size={30} />
+    className: 'callout-success',
+    icon: <CircleCheck size={20} />,
   },
   warning: {
-    colorIcon: 'yellow',
-    colorBackgroundWrapper: 'border-yellow-300 bg-yellow-950',
-    color: 'border-[#0d0f12] bg-[#0d0f12]',
-    icon: <CircleAlert color="yellow" size={30} />
+    className: 'callout-warning',
+    icon: <CircleAlert size={20} />,
   },
   error: {
-    colorIcon: 'red',
-    colorBackgroundWrapper: 'border-red-300 bg-red-950',
-    color: 'border-[#0d0f12] bg-[#0d0f12]',
-    icon: <CircleX color="red" size={30} />
-  }
+    className: 'callout-error',
+    icon: <CircleX size={20} />,
+  },
 }
 
 const BlockInfo = ({ variant, className = '', children }: BlockInfoProps) => {
+  const { className: variantClassName, icon } = variantMap[variant]
+
   return (
-    <div
-      className={`${className} ${variant} relative border-l-4 px-3 py-3 my-5 rounded-sm ${hardCodeForVariant[variant]?.colorBackgroundWrapper}`}
-    >
-      <div
-        className={`icon absolute p-1 border-x-4 top-[-23px] left-[-23px] border-y-4  rounded-full ${hardCodeForVariant[variant]?.color}
-      `}
-      >
-        {hardCodeForVariant[variant]?.icon}
+    <div className={cn('callout', variantClassName, className)}>
+      <div className="callout-title">
+        {icon}
+        <span>{variant.charAt(0).toUpperCase() + variant.slice(1)}</span>
       </div>
-      {children}
+      <div className="callout-content">{children}</div>
     </div>
   )
 }

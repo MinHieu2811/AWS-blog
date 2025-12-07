@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/layout/Header";
 import PageTransition from "@/components/layout/PageTransition";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { cookies } from "next/headers";
 import SessionManager from "@/components/tracking/SessionManager";
 import type { Theme } from "@/store/themeStore";
-
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -55,8 +55,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionManager />
+          <Header />
           <PageTransition>{children}</PageTransition>
+          <SessionManager />
         </ThemeProvider>
       </body>
     </html>

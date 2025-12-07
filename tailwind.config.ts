@@ -35,6 +35,12 @@ const config: Config = {
           bg: "var(--code-bg)",
           text: "var(--code-text)",
         },
+        info: "var(--info)",
+        success: "var(--success)",
+        warning: "var(--warning)",
+        error: "var(--error)",
+        note: "var(--note)",
+        tip: "var(--tip)",
       },
       fontFamily: {
         sans: ["var(--font-sans)"],

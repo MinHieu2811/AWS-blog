@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Amplify handles SSR/ISR with default Next.js server settings */
 };
 
 export default nextConfig;

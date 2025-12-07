@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_TRACKING ||
+  process.env.API_TRACKING ||
+  '';
+
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: `${BASE_URL}/api`,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

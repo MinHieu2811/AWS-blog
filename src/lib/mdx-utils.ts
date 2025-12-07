@@ -124,18 +124,57 @@ export async function processAndSerializeMDX(
 /**
  * Extract slug from S3 key
  */
-export function extractSlugFromS3Key(key: string, prefix: string): string {
-  // Remove prefix and file extension
-  const withoutPrefix = key.replace(prefix, '');
-  const withoutExtension = withoutPrefix.replace(/\.(md|mdx)$/, '');
-  return withoutExtension;
+type ExtractSlugOptions = {
+  contentFileName?: string;
+};
+
+export function extractSlugFromS3Key(
+  key: string,
+  prefix: string,
+  options: ExtractSlugOptions = {}
+): string {
+  const contentFileName = options.contentFileName ?? 'content.mdx';
+  const normalizedPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+  let withoutPrefix = key.startsWith(normalizedPrefix)
+    ? key.slice(normalizedPrefix.length)
+    : key;
+
+  if (withoutPrefix.endsWith(`/${contentFileName}`)) {
+    withoutPrefix = withoutPrefix.slice(0, -`${contentFileName}`.length - 1);
+  } else {
+    withoutPrefix = withoutPrefix.replace(/\.(md|mdx)$/, '');
+  }
+
+  return withoutPrefix.replace(/\/$/, '');
 }
 
 /**
  * Generate S3 key from slug
  */
-export function generateS3KeyFromSlug(slug: string, prefix: string): string {
-  return `${prefix}${slug}.md`;
+type GenerateS3KeyOptions = {
+  contentFileName?: string;
+  slugIsFileName?: boolean;
+};
+
+export function generateS3KeyFromSlug(
+  slug: string,
+  prefix: string,
+  options: GenerateS3KeyOptions = {}
+): string {
+  const contentFileName = options.contentFileName ?? 'mdx';
+  const slugIsFileName = options.slugIsFileName ?? true;
+  const normalizedPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+  const normalizedSlug = slug.replace(/^\/+/, '').replace(/\/+$/, '');
+
+  if (slugIsFileName) {
+    const rawExtension = contentFileName.includes('.')
+      ? contentFileName.split('.').pop() ?? 'mdx'
+      : contentFileName;
+    const normalizedExtension = rawExtension.replace(/^\./, '') || 'mdx';
+    return `${normalizedPrefix}${normalizedSlug}.${normalizedExtension}`;
+  }
+
+  return `${normalizedPrefix}${normalizedSlug}/${contentFileName}`;
 }
 
 /**

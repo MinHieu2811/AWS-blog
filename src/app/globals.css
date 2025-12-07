@@ -633,3 +633,66 @@
     font-size: 0.875rem;
   }
 }
+
+.toc ul {
+  list-style: none;
+  padding: 0;
+  position: relative;
+}
+
+.toc-item-wrapper {
+  position: relative;
+}
+
+.toc-item {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 4px 4px;
+  color: gray;
+  text-decoration: none;
+  transform: translateX(0px);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+.toc-item.active {
+  color: #0070f3;
+}
+
+/* .toc-item::after {
+  content: "";
+  width: 0;
+  height: 2px;
+  background: #0070f3;
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+  transition: width 0.3s ease-in-out;
+} */
+
+.toc-item:hover {
+  transform: translateX(10px);
+}
+/*
+.toc-item.active {
+  font-weight: bold;
+} */
+
+.active-indicator {
+  position: absolute;
+  left: -6px;
+  top: 6px;
+  width: 4px;
+  height: 20px;
+  background: #0070f3;
+  border-radius: 4px;
+}
+
+pre.shiki {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--wh-gray-600);
+
+  font-size: 14px;
+}

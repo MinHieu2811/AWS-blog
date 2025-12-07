@@ -6,14 +6,17 @@ export const awsConfig = {
 };
 
 export const s3Config = {
-  bucketName: process.env.S3_BUCKET_NAME || '',
-  blogPrefix: process.env.S3_BLOG_PREFIX || 'blog-posts/',
+  sourceBucketName:
+    process.env.S3_SOURCE_BUCKET_NAME || '',
+  sourcePrefix: process.env.S3_SOURCE_PREFIX || 'blog-post/',
+  sourceContentFileName: process.env.S3_SOURCE_CONTENT_FILETYPE || 'mdx',
+  sourceSlugIsFileName: process.env.S3_SOURCE_SLUG_IS_FILENAME !== 'false',
   region: process.env.AWS_REGION || 'ap-southeast-1',
 };
 
 export const dynamoDBConfig = {
   tableName: process.env.DYNAMODB_TABLE_NAME || 'blog-metadata',
-  region: process.env.DYNAMODB_REGION || 'ap-southeast-1',
+  region: process.env.AWS_REGION || 'ap-southeast-1',
 };
 
 export const s3Client = new S3Client({

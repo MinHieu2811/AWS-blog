@@ -1,11 +1,17 @@
 import { checkIsClient } from '@/utils/checkIsClient';
 import axiosInstance from '@/lib/axios';
 
+const BASE_URL_TRACKING =
+  process.env.NEXT_PUBLIC_API_TRACKING ||
+  process.env.API_TRACKING ||
+  '';
+const API_TRACKING_URL = `${BASE_URL_TRACKING}/api/trackings`;
 export interface TrackingEventData {
   sessionId?: string;
   slug?: string;
   eventName?: string;
   data?: Record<string, any>;
+  timestamp?: string;
 }
 
 const SESSION_ID_KEY = 'sessionId';
@@ -51,7 +57,9 @@ const sendSingleEvent = async (data: TrackingEventData, retriesLeft = MAX_RETRIE
     if (!data.eventName) {
       console.error('Missing required field: eventName');
     }
-    await axiosInstance.post('/tracking', data);
+
+    console.log('Sending event to:', BASE_URL_TRACKING);
+    await axiosInstance.post(API_TRACKING_URL, data);
   } catch (err) {
     if (retriesLeft > 1) {
       const currentAttempt = MAX_RETRIES + 1 - retriesLeft;
@@ -93,7 +101,7 @@ export const sendBeaconEvent = (data: Omit<TrackingEventData, 'sessionId'>) => {
   const sessionId = getSessionId();
   const eventData = { ...data, sessionId: sessionId ?? undefined };
   const blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
-  navigator.sendBeacon('/api/tracking', blob);
+  navigator.sendBeacon(API_TRACKING_URL, blob);
 };
 
 export const retryFailedEvents = async () => {
